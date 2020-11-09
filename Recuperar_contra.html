@@ -1,0 +1,106 @@
+<link href="Estilo_Recuperar.css" rel="stylesheet">
+<!------ Include the above in your HEAD tag ---------->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Recuperar</title>
+   <!--Made with love by Mutiullah Samim -->
+   
+	<!--Bootsrap 4 CDN-->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <!--Fontawesome CDN-->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+	
+</head>
+<body>
+<div class="container">
+	<div class="d-flex justify-content-center h-100">
+		<div class="card">
+			<div class="card-header">
+				<h3>Ingresa tu Usuario</h3>
+			</div>
+			<div class="card-body">
+				<form>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><i class="fas fa-user"></i></span>
+						</div>
+						<input id="usuario" type="text" class="form-control" placeholder="Usuario">
+						
+					</div>
+					<div class="form-group"> 
+						<button onclick="Recuperar() " style="margin-left: 10px" type="button" class="btn float-right login_btn">Recuperar</button>	
+						<button onclick="Regresar() " type="button" class="btn float-right login_btn_2">Regresar</button>	
+					</div>
+				</form>
+			</div>			
+		</div>
+
+
+	</div>
+</div>
+
+	<!-- Acá le agregamos funcionalidad a los botones --> 
+	<!--  --> 
+<script>
+	function Recuperar(){
+		var username = document.querySelector('#usuario').value
+		if (username==""){
+
+			alert("Ingrese usuario")
+
+		}else{
+		fetch('https://proyecto201906588.herokuapp.com//Recuperar/'+ username)
+
+
+          //El primer .then(variable => response.json) le estamos indicando
+          //Que la respuesta es un json, esta puede cambiar por text si en dado
+          //Caso retornaramos un texto unicamente
+        .then(response => response.json())
+          //Seguido de esto agregamos dos metodos con punto
+          //.catch que sirve para capturar cualquier error
+          //catch(variable => { instrucciones })
+          //Hagamos de cuenta que despues de la flecha, es una funcion aparte, por lo tanto
+          //Esta debe de ir en llaves, aqui estamos agregando todo el codigo que se hara
+          //Si llegase a ocurrir un error.
+        .catch(error => {
+        console.log(error)
+        })
+          //.then es el metodo que le dice "Todo estuvo bien, ahora que hacemos"
+          //Con este metodo, tenemos el json que recibimos de nuestra API
+          //then(variable => {instrucciones})
+          //Al igual que el catch, en este apartado recibe todas las instrucciones si
+          //el fetch consumio la API sin ningun problema
+        .then(res => {
+
+		console.log(res);
+		// Obtenemos el mensaje 
+		console.log(res.message);
+		var contrasenia = res.contra
+
+		if(res.message == "Failed"){
+
+		alert("No se encontró el usuario")
+
+		}else{
+		alert(`Su contraseña es: ${contrasenia}`)
+		location.href="Login.html"
+		}
+		}) 
+		}
+		}
+
+	function Regresar(){
+		location.href="Login.html"
+	}
+
+
+	
+</script>
+
+</body>
+</html>
+

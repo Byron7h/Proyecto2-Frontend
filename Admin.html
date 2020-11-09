@@ -1,0 +1,216 @@
+<link href="Estilo_Admin.css" rel="stylesheet">
+<!------ Include the above in your HEAD tag ---------->
+
+
+<html>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+  <head>
+    <meta charset="utf-8">
+    <title>Sidebar</title>
+  </head>
+  <body onload="CargarDatos()" id="main"></body>
+    <ul class="sidebar">
+      <center><h2><a id ="logeado" href="index.html"></a></h2></center>
+
+      <li><button onclick=" Perfil() " type="button" class="btn float-right login_btn_2">Mi perfil</button></li>
+      <center><li><button onclick=" Usuarios() " type="button" class="btn float-right login_btn"><i class='fas fa-angle-double-right'></i>  Usuarios</button></li></center>
+      <li><button onclick=" Canciones() " type="button" class="btn float-right login_btn_2">Canciones</button></li>
+      <li><button onclick=" Solicitudes() " type="button" class="btn float-right login_btn_2">Solicitudes</button></li>
+      <li><button onclick=" Reporte() " type="button" class="btn float-right login_btn_2">Reporte</button></li>
+      <li><button onclick=" Regresar() " type="button" class="btn float-right login_btn_2">Cerrar Sesión</button></li>
+    
+      </ul>
+
+    <div class="container">
+        <h2>Usuarios registrados</h2>
+        <li><button onclick=" Registrar_admin() " type="button" class="btn float-right login_btn_2">Agregar nuevo Administrador</button></li>
+        <table>
+            <!------ Encabezado de nuestra tabla  ---------->
+            <thead>
+                <tr>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Apellido</th>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Acciones</th>
+                    
+                </tr>
+            </thead>
+
+<!------ Necesitamos un tbody, acá va a estar el contenido de la tabla, le damos un ide único para poder llamarlo luego ---------->
+<!-- Lo dejamos vacio, ya que el contenido del mismo lo agregaremos dinamicamente --> 
+            
+            <tbody id="CuerpoClientes">
+            </tbody>
+        </table>
+
+    </div>
+</body>
+
+
+<script>
+
+
+    //Abrimos nuestro siempre buen script Acá colocamos las funcipnes
+
+    // Función CargarDatos, esta la pusimos al inicio del body, para ejecutarla de una
+    //Todo metodo debe de ir con llaves
+
+    function CargarDatos(){
+        
+        //Lo que hacemos es obtener los elementos que queremos modificar
+        //1. Obtenemos el elemento del documento, lo buscamos por medio de su id
+        //Entonces, document.querySelector('#Id_Elemento') "andá a buscame el elemento con este id"
+        //Donde id es el valor que le dimos a la hora de crearlo
+
+         var nombre = document.querySelector('#logeado')
+
+        //Usamos sessionStorage.variable
+        //Donde la variable es el nombre que le agregamos a la hora de hacer
+        //El sessionStorage.setItem(nombre, valor)
+
+        // En este caso colocamos usuario, variable_usuario en el login, al dejar accedera alguien
+        // --->   sessionStorage.setItem("usuario",username)
+
+
+        //Colocamos dentro de una variable
+         var iniciado = sessionStorage.usuario
+
+
+        //Para agregar mas "texto" (o un valor xd, porque no había nada antes en este caso) dentro del HTML en el elemento que queremos
+        //Usamos el metodo elemento.innerHTML y el valor que le damos es el codigo
+        //O texto que estara dentro de la etiqueta
+
+        // inerHTML= "Vas a agregar esto entre las etiquetas originales"
+
+        //Para utilizar variables dentro de este texto, lo mas recomendable es hacer
+        //La cadena con el apostrofre `` y al agregar las variables
+        //Usamos el signo $ seguido de llaves y el nombre de la varibale
+        //Por ejemplo ${nombre variable}
+        // Comoen el ejemplo de Carlos, pero nosotros solo queremos la pura variable
+
+
+
+        //Le decimos que lo que vqa a colocar en edio de logueado va a ser el contenido de la variable iniciado
+        //Osea nuestra variable de seción
+        nombre.innerHTML = iniciado
+
+
+
+
+        // •••• Hacemos lo mismo para la tabla
+        //1. Buscamos la variable con el id, esto del id tal vez es como un, perate no tengo tus datos,pero te los voy a dar al rato xd
+         var tabla = document.querySelector('#CuerpoClientes')
+
+
+        //  METODO MAGICO
+         fetch('https://proyecto201906588.herokuapp.com//Clientes_Registrados')
+          //El primer .then(variable => response.json) le estamos indicando
+          //Que la respuesta es un json, esta puede cambiar por text si en dado
+          //Caso retornaramos un texto unicamente
+         .then(response => response.json())
+          //Seguido de esto agregamos dos metodos con punto
+          //.catch que sirve para capturar cualquier error
+          //catch(variable => { instrucciones })
+          //Hagamos de cuenta que despues de la flecha, es una funcion aparte, por lo tanto
+          //Esta debe de ir en llaves, aqui estamos agregando todo el codigo que se hara
+          //Si llegase a ocurrir un error.
+        .catch(error => {
+            console.log(error)
+        })
+          //.then es el metodo que le dice "Todo estuvo bien, ahora que hacemos"
+          //Con este metodo, tenemos el json que recibimos de nuestra API
+          //then(variable => {instrucciones})
+          //Al igual que el catch, en este apartado recibe todas las instrucciones si
+          //el fetch consumio la API sin ningun problema
+        .then(res => {
+            //En este caso, como estamos mostrando la informacion queremos que se agregue a nuestra tabla
+            //Tenemos un for que recorre NUESTRO OBJETO OBTENIDO TIPO JASON LLAMADO RES , estas variables pueden ser cualquier
+            //Nombre, media vez sea el nombre que le indiquemos antes de la flecha y saber que esta variable
+            //Tiene la salida del JSON de la API
+
+
+
+
+         
+
+
+
+
+
+        for (var i in res) {
+
+
+          //2. Colocando en lugar del Id, con el innerHTML
+
+              //En este caso queremos escribir dentro de la tabla, usaremos un += Para que se valla agregando y agregando en lugar de sustituirse en el innerHTML
+              //De nuestro objeto tabla, este objeto esta haciendo referencia al objeto en el documento
+              //Que tenga como id CuerpoUsuarios
+
+              //Hacemos una fila sencilla con <tr> y agregamos las columnas con <td>
+
+            if (iniciado !== res[i].usuario){
+            tabla.innerHTML += 
+            `<tr>
+            <th>  ${res[i].tipo} </th>
+            <th>  ${res[i].nombre} </th>
+            <th>  ${res[i].apellido} </th>
+            <th>  ${res[i].usuario} </th>
+            <th> <button type="button" value="${res[i].usuario}" onclick="verUsuario(this)" class="btn btn-success">Modificar</button> </th>
+            </tr>`
+                //En este caso, queremos agregar un boton por cada usuario, para que nos redirija a su perfil
+                //Entonces lo agregamos dinamicamente, este es un truco que yo aplique, hay mas formas de hacerlo
+                //Le damos un valor a este boton, nos encargamos que el valor sea el identificador unico del objeto
+                //Con el que estamos trabajando, en este caso el de los usuarios es el usernamo
+                //Y le agregamos el onclick="NombreMetodo(this)" para que cuando llamemos al boton, tengamos
+                //Como parametro el objeto como tal y asi obtener su valor cuando sea necesario.
+            }
+            }
+
+          })
+    }
+
+      //Metodo que nos sirve para ver el perfil del usuario
+      //Como dijimos anteriormente, necesitamos un parametro que indique el objeto que le estamos mandando
+    function verUsuario(boton){
+        //En este caso boton hace referencia al this de cada boton en la tabla
+        //Y por lo tatno, podemos obtener su valor, que definimos anteriormente
+        //Esto para nuestro beneficio
+      var usuario = boton.value
+          //Usamos el sessionStorage para guardar la informacion que nos servira en otra pagina HTML
+      sessionStorage.setItem("buscar", usuario)
+          //Usamos location.href para movernos entre HTMLS
+      location.href="Modificar_usuario.html"
+      }
+
+    function Regresar(){
+		location.href="Login.html"
+	  }
+
+    function Canciones(){
+	  location.href="Canciones_admin.html"
+	  }
+
+    function Usuarios(){
+	  location.href="Admin.html"
+	  }
+
+    function Perfil(){
+		  location.href="Perfil_ad.html"
+	  }
+
+    function Registrar_admin(){
+		  location.href="Registrar_nuevo_Admin.html"
+	  }
+    
+    function Solicitudes(){
+	  location.href="Solicitudes_admin.html"
+    }
+
+    function Reporte(){
+	  location.href="Reporte_pdf.html"
+	  }
+    
+
+</script>

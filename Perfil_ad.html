@@ -1,0 +1,145 @@
+<link href="Estilo_Perfil.css" rel="stylesheet">
+<!------ Include the above in your HEAD tag ---------->
+
+
+<html>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+  <head>
+    <meta charset="utf-8">
+    <title>Sidebar</title>
+  </head>
+  <body onload="CargarDatos()" id="main"></body>
+    <ul class="sidebar">
+      <center><h2><a id ="logeado" href="index.html"></a></h2></center>
+
+
+
+      <center><li><button onclick=" Perfil() " type="button" class="btn float-right login_btn"><i class='fas fa-angle-double-right'></i>  Mi perfil</button></li></center>
+      <li><button onclick=" Usuarios() " type="button" class="btn float-right login_btn_2">Usuarios</button></li>
+      <li><button onclick=" Canciones() " type="button" class="btn float-right login_btn_2">Canciones</button></li>
+      <li><button onclick=" Solicitudes() " type="button" class="btn float-right login_btn_2">Solicitudes</button></li>
+      <li><button onclick=" Reporte() " type="button" class="btn float-right login_btn_2">Reporte</button></li>
+      <li><button onclick=" Regresar() " type="button" class="btn float-right login_btn_2">Cerrar Sesión</button></li>
+    
+      </ul>
+    <div class="container">
+      <div class="d-flex justify-content-center h-100">
+
+          <div class="card-header">
+            <h1>Mis Datos</h1>
+          </div>
+          <div class="card-body">
+
+				    <div class="input-group form-group">
+				    <form>
+					      <h3><a id ="nombre"></a></h3>
+					      <h3><a id ="apellido"></a></h3>
+					      <h3><a id ="usuario"></a></h3>
+					      <h3><a id ="contra"></a></h3>
+              </div>
+              <button onclick=" Modificar() " type="button" class="btn float-right login_btn">Modificar</button>
+            </div>
+          </div>
+
+      </div>
+    </div>
+</body>
+
+
+<script>
+
+
+
+
+    //Abrimos nuestro siempre buen script Acá colocamos las funcipnes
+
+    // Función CargarDatos, esta la pusimos al inicio del body, para ejecutarla de una
+    //Todo metodo debe de ir con llaves
+
+  function CargarDatos(){
+
+    var nombre = document.querySelector('#logeado')
+
+    var iniciado = sessionStorage.usuario
+
+    nombre.innerHTML = iniciado
+
+    var busca_esto = sessionStorage.usuario
+
+  // Metdo Local Host, comoe s get no le decimos que método es, ni le damos un body ni un header
+  fetch(`https://proyecto201906588.herokuapp.com//Obtener_Usuario/${busca_esto}`)
+
+  //si resivimos respuesta va a ser tipo....
+  .then(response => response.json())
+
+
+  //Si hay un error va a pasar esto .....
+  .catch(error => {
+      console.log(error)
+    })
+
+
+// Si todo sale bien vamos a hacer esto....
+  .then(res =>{
+  console.log(res)
+        //En este caso queremos asignar un valor al elementoo en especifico
+        //Como cada elemento tiene un id, vamos a buscarlo con el metodo
+        //document.querySelector(#id) estos dependen de los que agregamos anteriormente
+
+
+  //1. Obtenemos el elemento del documento, lo buscamos por medio de su id
+    //Entonces, document.querySelector('#Id_Elemento') "andá a buscame el elemento con este id"
+    //Donde id es el valor que le dimos a la hora de crearlo
+
+
+  // . value (el valor que tienen) = Igualado al valor que vas a tomar ahora
+  // Que en este caso son los valores que le enviamos desde la Api
+
+  //andá buscame la variable que tenga como id=nombre
+  var nombre_ = document.querySelector('#nombre')
+  //donde lo encontres vas a escribir lo siguiente
+  nombre_.innerHTML = `Nombre:  ${res.nombre}`
+
+  var apellido_ = document.querySelector('#apellido')
+  apellido_.innerHTML = `Apellido:  ${res.apellido}` 
+
+  var usuario_ = document.querySelector('#usuario')
+  usuario_.innerHTML = `Usuario:  ${res.usuario}` 
+
+  var contra_ = document.querySelector('#contra')
+  contra_.innerHTML = `Contraseña:  ${res.contra}`
+      })
+  }
+
+  function Regresar(){
+	  location.href="Login.html"
+	}
+
+  function Canciones(){
+	  location.href="Canciones_admin.html"
+	}
+
+  function Perfil(){
+	  location.href="Perfil_ad.html"
+	}
+
+  function Usuarios(){
+	  location.href="Admin.html"
+	}
+
+  function Solicitudes(){
+	  location.href="Solicitudes_admin.html"
+	  }
+
+  function Modificar(){
+	  location.href="Modificar_Perfil.html"
+  }
+
+  function Reporte(){
+	  location.href="Reporte_pdf.html"
+	}
+
+
+
+</script>

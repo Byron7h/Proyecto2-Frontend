@@ -1,0 +1,198 @@
+<link href="Estilo_Solicitud_Nueva.css" rel="stylesheet">
+<!------ Include the above in your HEAD tag ---------->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Registro</title>
+   <!--Made with love by Mutiullah Samim -->
+   
+	<!--Bootsrap 4 CDN-->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <!--Fontawesome CDN-->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+</head>
+
+<!--  ••••   HACEME ESTA FUNCION NOMÁS CARGUÉS-->
+
+<body id="main"></body>>
+<div class="container">
+	<div class="d-flex justify-content-center h-100">
+		<div class="card">
+			<div class="card-header">
+				<h3>Nueva Solicitud</h3>
+			</div>
+			<div class="card-body">
+				<form>
+					<h6>Nombre</h6>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"></span>
+						</div>
+						<!-- Para este caso necesitamos guardar la informacion de los input -->
+         				<!-- Por eso es que les agregamos un id, por que queremos su informacion en los metodos que crearemos -->
+						<!-- input  ID  TYPE  CLASS=FORMCONTROL  PLACEHOLDER=lo que aparecerá antes que se ingrese texto-->
+						 <input id="nombre" type="text" class="form-control" placeholder="Nombre">
+					</div>	
+
+
+
+					<h6>Artista</h6>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"></i></span>
+						</div>
+						<input id="artista" type="text" class="form-control"  placeholder="Artista">
+					</div>	
+					
+					
+
+					<h6>Album</h6>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"></span>
+						</div>
+						<input id="album" type="text" class="form-control"  placeholder="Album">
+					</div>	
+					
+					
+
+					<h6>Fecha</h6>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"></span>
+						</div>
+						<input id="fecha" type="text" class="form-control" placeholder="Fecha">
+					</div>
+
+
+					<h6>Link Imagen</h6>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"></span>
+						</div>
+						<input id="imagen" type="text" class="form-control" placeholder="Link Imagen">
+					</div>
+					
+
+
+					<h6>Link Spotify</h6>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"></span>
+						</div>
+						<input id="spotify" type="text" class="form-control"  placeholder="Link Spotify">
+					</div>
+					
+
+					<h6>Link Youtube</h6>
+					<div class="input-group form-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text"></span>
+						</div>
+						<input id="youtube" type="text" class="form-control"  placeholder="Link Youtube">
+					</div>
+					
+					<br>
+
+					<div class="form-group">
+
+						<button onclick=" Agregar() " style="margin-left: 10px" type="button" class="btn float-right login_btn">Agregar</button>
+						<button onclick=" Regresar() " type="button" class="btn float-right login_btn_2">Regresar</button>
+
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
+
+
+
+	function Regresar(){
+		location.href="Canciones_Cliente.html"
+	}
+
+	function Agregar(){
+
+		var nombre = document.querySelector('#nombre').value
+		var artista = document.querySelector('#artista').value
+		var album = document.querySelector('#album').value
+		var fecha = document.querySelector('#fecha').value
+		var imagen = document.querySelector('#imagen').value
+		var spotify = document.querySelector('#spotify').value
+		var youtube = document.querySelector('#youtube').value
+
+
+
+		// Creamos el objeto que le vamos a enviar a la Api
+		if(nombre!=="" && artista!=="" &&album!=="" &&fecha!=="" &&imagen!=="" &&spotify!=="" &&youtube!==""){
+
+			var objeto = {
+				'nombre': nombre,
+				'artista': artista,
+				'album': album,
+				'fecha': fecha,
+				'imagen': imagen,
+				'spotify': spotify,
+				'youtube': youtube
+			}
+
+
+		console.log(objeto)
+
+
+		//Con el fecth le indicamos la tura a la que debe ir
+		fetch(`https://proyecto201906588.herokuapp.com//Agregar_Solicitud`,{
+
+		method: 'POST',
+
+
+		body: JSON.stringify(objeto), // Convertimos nuestros datos en un JSON legible para la API
+		headers:{
+			'Content-Type': 'application/json'
+		}
+
+		})
+		.then(res => res.json())
+
+
+		//◘ Si hay un error vas a hacer lo que está ente llaves
+		// err es variable random, abrimos {} porque vamos a hacer más de una instrucción
+		.catch(err => {
+
+		//mandamos el error a la consola
+			console.error('Error:', err)
+			alert("Ocurrio un error, ver la consola")
+		})
+
+		//◘ Si no hay errores
+		// response variable random
+		.then(response =>{
+
+			if(response.message !== "Success"){
+				alert("Ocurrió un error, no se agregó la solicitud, ver consola")
+
+			}else{
+				console.log('Success', response);
+
+				//Así podemos mandar mensajes desde consola xd
+				alert(response.reason)
+				location.href="Canciones_Cliente.html"
+			}
+		}) 
+	}else{
+	alert("Llene todos los parámetros")
+	}
+}
+
+</script>
+
+</body>
+</html>

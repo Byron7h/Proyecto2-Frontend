@@ -1,0 +1,243 @@
+<link href="Estilo_Canciones.css" rel="stylesheet">
+<!------ Include the above in your HEAD tag ---------->
+
+
+<html>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+
+<!------ Agregamos jquery ---------->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<!------ Agregamos papa parse, se puede descargar o se puede copiar el link del archivo ya subido en internet ---------->
+<!------ Para eso buscamos en google nombre_librería .min.js cdn o solo librería cdn y allí nos da el link, usamos la primera, saber porque xd ---------->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+
+
+  <head>
+    <meta charset="utf-8">
+    <title>Sidebar</title>
+  </head>
+  <body onload="CargarDatos()" id="main"></body>
+    <ul class="sidebar">
+      <center><h2><a id ="logeado" href="index.html"></a></h2></center>
+
+      <li><button onclick=" Perfil() " type="button" class="btn float-right login_btn_2">Mi perfil</button></li>
+      <li><button onclick=" Usuarios() " type="button" class="btn float-right login_btn_2">Usuarios</button></li>
+      <li><button onclick=" Canciones() " type="button" class="btn float-right login_btn_2">Canciones</button></li>
+      <center><li><button onclick="Solicitudes() " type="button" class="btn float-right login_btn"><i class='fas fa-angle-double-right'></i>  Solicitudes</button></li></center>
+      <li><button onclick=" Reporte() " type="button" class="btn float-right login_btn_2">Reporte</button></li>
+      <li><button onclick=" Regresar() " type="button" class="btn float-right login_btn_2">Cerrar Sesión</button></li>
+    
+      </ul>
+
+    <div class="container">
+      <div class="section-title">
+        <h2>Solicitudes registradas</h2>
+
+        </div>
+        <table>
+            <!------ Encabezado de nuestra tabla  ---------->
+            <thead>
+                <tr>
+                  
+                    <th width="10%" scope="col">Nombre</th>
+                    <th scope="col">Artista</th>
+                    <th scope="col">Album</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Imagen</th>
+                    <th scope="col">Audio</th>
+                    <th scope="col">Vídeo</th>
+                    <th scope="col">Acciones</th>
+                     
+                </tr>
+            </thead>
+
+<!------ Necesitamos un tbody, acá va a estar el contenido de la tabla, le damos un ide único para poder llamarlo luego ---------->
+<!-- Lo dejamos vacio, ya que el contenido del mismo lo agregaremos dinamicamente --> 
+            
+            <tbody id="CuerpoClientes">
+            </tbody>
+        </table>
+
+    </div>
+</body>
+
+
+<script>
+
+
+    //Abrimos nuestro siempre buen script Acá colocamos las funcipnes
+
+    // Función CargarDatos, esta la pusimos al inicio del body, para ejecutarla de una
+    //Todo metodo debe de ir con llaves
+
+    function CargarDatos(){
+
+      var nombre = document.querySelector('#logeado')
+      var iniciado = sessionStorage.usuario
+      nombre.innerHTML = iniciado
+        // •••• Hacemos lo mismo para la tabla
+        //1. Buscamos la variable con el id, esto del id tal vez es como un, perate no tengo tus datos,pero te los voy a dar al rato xd
+      var tabla = document.querySelector('#CuerpoClientes')
+
+
+        //  METODO MAGICO
+      fetch('https://proyecto201906588.herokuapp.com//Solicitudes_Registradas')
+
+          //Que la respuesta es un json
+
+      .then(response => response.json())
+          
+          //catch(variable => { instrucciones })
+          //Si llegase a ocurrir un error.
+      .catch(error => {
+
+            
+            console.log(error)
+      })
+          //.then es el metodo que le dice "Todo estuvo bien, ahora que hacemos"
+          //Con este metodo, tenemos el json que recibimos de nuestra API
+          //then(variable => {instrucciones})
+      .then(res => {
+        console.log(res)
+            //En este caso, como estamos mostrando la informacion queremos que se agregue a nuestra tabla
+            //Tenemos un for que recorre NUESTRO OBJETO OBTENIDO TIPO JASON LLAMADO RES , estas variables pueden ser cualquier
+            //Nombre, media vez sea el nombre que le indiquemos antes de la flecha y saber que esta variable
+            //Tiene la salida del JSON de la API
+
+        for (var i in res) {
+
+
+          //2. Colocando en lugar del Id, con el innerHTML
+
+              //En este caso queremos escribir dentro de la tabla, usaremos un += Para que se valla agregando y agregando en lugar de sustituirse en el innerHTML
+              //De nuestro objeto tabla, este objeto esta haciendo referencia al objeto en el documento
+              //Que tenga como id CuerpoUsuarios
+
+              //Hacemos una fila sencilla con <tr> y agregamos las columnas con <td>
+            tabla.innerHTML += 
+
+            //usamos apostrode y el $ para concatenar las variables
+            `<tr>
+            <th width="10">  ${res[i].nombre} </th>
+            <th>  ${res[i].artista} </th>
+            <th>  ${res[i].album} </th>
+            <th>  ${res[i].fecha} </th>
+            <th><img src="${res[i].imagen}" class="img-fluid" width="175" height="175"> </th>
+            <th><iframe src="${res[i].spotify}" width="280" height="344" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe></th>
+            <th><iframe id="player" type="text/html" width="640" height="360" src="${res[i].youtube}" frameborder="0"></iframe></th>                 
+            
+            <th> <button type="button"  value="${res[i].id}" onclick="Agregar(this)" class="btn btn-success">Agregar</button> 
+                <button type="button" style="margin: 10px" value="${res[i].id}" onclick="Eliminar(this)" class="btn btn-success">Eliminar</button>
+               
+            </tr>`          
+            }
+
+          })
+    }
+
+    function Regresar(){
+		location.href="Login.html"
+	  }
+
+    function Perfil(){
+		  location.href="Perfil_ad.html"
+	  }
+
+    function Agregar(botton){
+
+      var posición_datos = botton.value
+      var objeto = {
+				'id': posición_datos
+			  }
+      console.log(objeto)
+
+
+      fetch(`https://proyecto201906588.herokuapp.com//Cambiar_a_Cancion`,{
+      method: 'POST', 
+      body: JSON.stringify(objeto), // Convertimos nuestros datos en un JSON legible para la API
+      headers:{
+      'Content-Type': 'application/json'
+      }
+
+      })
+      .then(res => res.json())
+
+
+      //◘ Si hay un error vas a hacer lo que está ente llaves
+      // err es variable random, abrimos {} porque vamos a hacer más de una instrucción
+      .catch(err => {
+
+      //mandamos el error a la consola
+        console.error('Error:', err)
+        alert("Ocurrio un error, ver la consola")
+      })
+
+      //◘ Si no hay errores
+      // response variable random
+      .then(response =>{
+
+        if(response.message !== "Success"){
+				alert(response.reason)
+
+
+			}else{
+				console.log('Success:', response);
+
+				//Así podemos mandar mensajes desde consola xd
+            	alert(response.reason)
+            	location.href="Solicitudes_admin.html"
+				}
+
+      })
+    }
+
+	  function Eliminar(botton){
+		//Agarramos la variable de sección en la posición buscar 
+		//Que tiene el nombres de usuario para mandarselo al método eliminar
+		    var elimina_esto = botton.value
+		    fetch(`https://proyecto201906588.herokuapp.com//Eliminar_Solicitud/${elimina_esto}`, {
+          method: 'DELETE',
+        //Volvemos a los 3 fetch, then, catch, then
+        }).then(res => res.json())
+        .catch(error => {
+            console.error('Error:', error)
+            alert("Ocurrio un error en la API, revise la consola")
+        })
+        .then(response =>{
+            console.log('Success:', response);
+            alert(response.message)
+            location.href="Solicitudes_admin.html"
+        }) 
+
+	}
+
+    function Comentarios(){
+      var id_cancion = boton.value
+      //Usamos el sessionStorage para guardar la informacion que nos servira en otra pagina HTML
+      sessionStorage.setItem("id_cancion", id_cancion)
+		  location.href="Perfil_ad.html"
+	  }
+    
+    function Usuarios(){
+	  location.href="Admin.html"
+	  }
+
+    function Solicitudes(){
+	  location.href="Solicitudes_admin.html"
+	  }
+
+    function Regresar(){
+	  location.href="Login.html"
+	  }
+
+    function Canciones(){
+	    location.href="Canciones_admin.html"
+	  }
+
+    function Reporte(){
+	  location.href="Reporte_pdf.html"
+	  }
+</script>

@@ -1,0 +1,238 @@
+ <link href="Estilo_Reporte.css" rel="stylesheet">
+<!------ Include the above in your HEAD tag ---------->
+
+
+<html>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+
+<!------ Agregamos jquery ---------->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<!------ Agregamos papa parse, se puede descargar o se puede copiar el link del archivo ya subido en internet ---------->
+<!------ Para eso buscamos en google nombre_librería .min.js cdn o solo librería cdn y allí nos da el link, usamos la primera, saber porque xd ---------->
+
+
+
+
+  <head>
+    <meta charset="utf-8">
+    <title>Sidebar</title>
+  </head>
+  <body onload="CargarDatos()" id="main"></body>
+    <ul class="sidebar">
+      <center><h2><a id ="logeado" href="index.html"></a></h2></center>
+
+      <li><button onclick=" Perfil() " type="button" class="btn float-right login_btn_2">Mi perfil</button></li>
+      <li><button onclick=" Usuarios() " type="button" class="btn float-right login_btn_2">Usuarios</button></li>
+      <li><button onclick="Canciones() " type="button" class="btn float-right login_btn_2">Canciones</button></li>
+      <li><button onclick=" Solicitudes() " type="button" class="btn float-right login_btn_2">Solicitudes</button></li>
+      <center><li><button onclick="Reporte() " type="button" class="btn float-right login_btn_3"><i class='fas fa-angle-double-right'></i>  Reporte</button></li></center>
+      <li><button onclick=" Regresar() " type="button" class="btn float-right login_btn_2">Cerrar Sesión</button></li>
+    
+      </ul>
+
+    <div id="HTMLtoPDF">
+    <div class="container">
+      <div class="section-title">
+        
+        <h2>Canciones registradas</h2>
+        <button onclick=" Generar_pdf() " type="button" class="btn float-right login_btn">Descargar el reporte en PDF</button>
+        </br>>
+      </div>
+
+          <table>
+              <!------ Encabezado de nuestra tabla  ---------->
+              <thead>
+                  <tr>
+                  </tr>
+              </thead>
+
+<!------ Necesitamos un tbody, acá va a estar el contenido de la tabla, le damos un ide único para poder llamarlo luego ---------->
+<!-- Lo dejamos vacio, ya que el contenido del mismo lo agregaremos dinamicamente --> 
+            
+              <tbody id="CuerpoClientes">
+              </tbody>
+            </table>
+    </div>
+
+
+<script src="js/jspdf.js"></script>
+</body>
+
+
+<script>
+
+
+    //Abrimos nuestro siempre buen script Acá colocamos las funcipnes
+
+    // Función CargarDatos, esta la pusimos al inicio del body, para ejecutarla de una
+    //Todo metodo debe de ir con llaves
+
+    function CargarDatos(){
+
+      var nombre = document.querySelector('#logeado')
+      var iniciado = sessionStorage.usuario
+      nombre.innerHTML = iniciado
+
+
+
+
+        // •••• Hacemos lo mismo para la tabla
+        //1. Buscamos la variable con el id, esto del id tal vez es como un, perate no tengo tus datos,pero te los voy a dar al rato xd
+      var tabla = document.querySelector('#CuerpoClientes')
+
+
+        //  METODO MAGICO
+      fetch('https://proyecto201906588.herokuapp.com//Canciones_Registradas')
+
+          //Que la respuesta es un json
+
+      .then(response => response.json())
+          
+          //catch(variable => { instrucciones })
+          //Si llegase a ocurrir un error.
+      .catch(error => {
+            console.log(error)
+      })
+          //.then es el metodo que le dice "Todo estuvo bien, ahora que hacemos"
+          //Con este metodo, tenemos el json que recibimos de nuestra API
+          //then(variable => {instrucciones})
+      .then(res => {
+        console.log(res)
+            //En este caso, como estamos mostrando la informacion queremos que se agregue a nuestra tabla
+            //Tenemos un for que recorre NUESTRO OBJETO OBTENIDO TIPO JASON LLAMADO RES , estas variables pueden ser cualquier
+            //Nombre, media vez sea el nombre que le indiquemos antes de la flecha y saber que esta variable
+            //Tiene la salida del JSON de la API
+
+        for (var i in res) {
+
+
+          //2. Colocando en lugar del Id, con el innerHTML
+
+              //En este caso queremos escribir dentro de la tabla, usaremos un += Para que se valla agregando y agregando en lugar de sustituirse en el innerHTML
+              //De nuestro objeto tabla, este objeto esta haciendo referencia al objeto en el documento
+              //Que tenga como id CuerpoUsuarios
+
+              //Hacemos una fila sencilla con <tr> y agregamos las columnas con <td>
+            tabla.innerHTML += 
+
+            //usamos apostrode y el $ para concatenar las variables
+            `<tr>
+              <td>Nombre: ${res[i].nombre}</td>
+              <td>Artista: ${res[i].artista}</td>
+              <td>Album: ${res[i].album}</td>
+              <td>Fecha: ${res[i].fecha}</td>
+              <td>Link Imagen: ${res[i].imagen}</td>
+              <td>Link Spotify: ${res[i].spotify}</td>
+              <td>Link Youtube: ${res[i].youtube}</td>
+            </tr>`          
+            }
+
+
+            
+
+          })
+    }
+
+
+
+
+    function Generar_pdf(){
+
+
+      var doc = new jsPDF("Canciones_Registradas");
+      doc.setFontSize(20);
+
+      doc.text(20, 20, 'Reporte');;
+      doc.setFontSize(10);
+
+
+      fetch('https://proyecto201906588.herokuapp.com//Canciones_Registradas')
+
+          //Que la respuesta es un json
+
+      .then(response => response.json())
+          
+          //catch(variable => { instrucciones })
+          //Si llegase a ocurrir un error.
+      .catch(error => {
+            console.log(error)
+      })
+          //.then es el metodo que le dice "Todo estuvo bien, ahora que hacemos"
+          //Con este metodo, tenemos el json que recibimos de nuestra API
+          //then(variable => {instrucciones})
+      .then(res => {
+        console.log(res)
+            //En este caso, como estamos mostrando la informacion queremos que se agregue a nuestra tabla
+            //Tenemos un for que recorre NUESTRO OBJETO OBTENIDO TIPO JASON LLAMADO RES , estas variables pueden ser cualquier
+            //Nombre, media vez sea el nombre que le indiquemos antes de la flecha y saber que esta variable
+            //Tiene la salida del JSON de la API
+        var posición = 30
+        var numero = 0
+        for (var i in res) {
+
+
+          if (numero<4){
+            doc.text(20, posición, 'nombre:' + res[i].nombre);
+            doc.text(20, posición+5, 'artista:' + res[i].artista);
+            doc.text(20, posición+10, 'album:' + res[i].album);
+            doc.text(20, posición+15, 'fecha:' + res[i].fecha);
+            doc.text(20, posición+20, 'imagen:' + res[i].imagen);
+            doc.text(20, posición+25, 'spotify:' + res[i].spotify);
+            doc.text(20, posición+30, 'youtube:' + res[i].youtube);
+
+            posición = posición + 50
+            numero = numero + 1
+
+          }else{
+            doc.addPage();
+            doc.text(20, posición, 'nombre:' + res[i].nombre);
+            doc.text(20, posición+5, 'artista:' + res[i].artista);
+            doc.text(20, posición+10, 'album:' + res[i].album);
+            doc.text(20, posición+15, 'fecha:' + res[i].fecha);
+            doc.text(20, posición+20, 'imagen:' + res[i].imagen);
+            doc.text(20, posición+25, 'spotify:' + res[i].spotify);
+            doc.text(20, posición+30, 'youtube:' + res[i].youtube);
+
+            posición = 30
+            numero = 0
+
+          }
+          }
+      doc.save('Test.pdf');
+    })
+  }
+
+
+
+    function Perfil(){
+		  location.href="Perfil_ad.html"
+	  }
+
+    function Modificar(botton){
+      var id_cancion = botton.value
+      //Usamos el sessionStorage para guardar la informacion que nos servira en otra pagina HTML
+      sessionStorage.setItem("id_cancion", id_cancion)
+      console.log(id_cancion)
+		  location.href="Modificar_Cancion.html"
+	  }
+ 
+    function Usuarios(){
+	  location.href="Admin.html"
+	  }
+
+    function Solicitudes(){
+	  location.href="Solicitudes_admin.html"
+    }
+    
+    function Regresar(){
+	  location.href="Login.html"
+  }
+  
+  function Reporte(){
+	  location.href="Reporte_pdf.html"
+	}
+
+
+</script>
